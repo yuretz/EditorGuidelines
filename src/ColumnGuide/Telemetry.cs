@@ -11,8 +11,11 @@ namespace EditorGuidelines
 {
     internal static class Telemetry
     {
+#if TELEMETRY
         private const string c_instrumentationKey = "f8324fcc-eb39-4931-bebc-968aab7d3d7d";
-
+#else
+        private const string c_instrumentationKey = "00000000-0000-0000-0000-000000000000";
+#endif
         public static TelemetryClient Client { get; } = CreateClient();
 
         /// <summary>
@@ -34,6 +37,9 @@ namespace EditorGuidelines
 #pragma warning disable CA2000 // Dispose objects before losing scope. The TelemetryClient will own it.
             var configuration = new TelemetryConfiguration
             {
+#if !TELEMETRY
+                DisableTelemetry = true,
+#endif
                 InstrumentationKey = c_instrumentationKey,
                 TelemetryChannel = new InMemoryChannel
                 {
